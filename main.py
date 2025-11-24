@@ -23,6 +23,12 @@ async def root_html():
     return html_content
 from fastapi.templating import Jinja2Templates
 from fastapi import Request
+from fastapi.responses import Response
+
+@app.get('/favicon.ico', include_in_schema=False)
+async def favicon():
+    return Response(status_code=204)
+
 templates = Jinja2Templates(directory="templates/")
 
 # http://localhost:8000/main_html
@@ -38,9 +44,8 @@ async def main_html_context(request: Request):
     context ={
         "request": request,
         "title": "fastapi + jinja exaple",
-        "itmes": ["apple", "banama","cherry"],
-        "user": {"name: sanghun"
-                 , "age: 33"}
+        "items": ["apple", "banana","cherry"],
+        "user": {"name": "sanghun", "age": 33}
     }
     
 
@@ -50,9 +55,14 @@ async def main_html_context(request: Request):
 # http://localhost:8000/
 @app.get("/users_list")
 async def user_list(request: Request):
+    sample_users = [
+        {"name": "Alice", "age": 30, "city": "New York"},
+        {"name": "Bob", "age": 24, "city": "Los Angeles"},
+        {"name": "Charlie", "age": 35, "city": "Chicago"},
+    ]
     context = {
         "request": request,
-        "user_list : users"
+        "users_list": sample_users
         }
     return templates.TemplateResponse("users/list.html"
                                       , context)
