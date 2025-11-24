@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div> title : {{ title }} </div>
+    <div> items : {{ items }} </div>
+    <div> {{ items }} </div>
+    { % for item in items: %},
+    <div>{{ item }}</div>div>
+    {% endfor %}
+
+    <div> user dict : {{ user}} </div>
+    <div> user name : {{ user.name }} </div>
+    <div> user age : {{ user.age }} </div>
+    <div> my name is otter! </div>
+</body>
+</html>
