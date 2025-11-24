@@ -27,3 +27,4 @@ products = [
 @app.get("/")
 async def read_products(request: Request):
     return templates.TemplateResponse("main.html", {"request": request, "products": products})
+
