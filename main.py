@@ -1,5 +1,9 @@
 from fastapi import FastAPI
 app = FastAPI()
+
+from routes.todos import router as todos_router    # 별칭
+app.include_router(todos_router, prefix="/todos")
+
 # http://localhost:8000/
 @app.get("/")
 async def root():
@@ -98,11 +102,21 @@ async def board_details_post_json(request: Request): # 변수명을 소문자 'r
         "content": content_value
     }
 # http://localhost:8000/board/detail_html
-@app.get("/board/detail_html")        # 과제 경로 폴더
+@app.get("board/detail_html")        # 과제 경로 폴더
 async def main_html(request: Request):
-    return templates.TemplateResponse("board/detail.html"
+    return templates.TemplateResponse("boards/detail.html"
                                       , {"request": request})
 
+
+# http://localhost:8000/board/{detail_id}
+@app.get("board/{detail_id}")
+async def board_details_json(request: Request, detail_id): # 변수명을 소문자 'request'로 수정 (일반적인 파이썬 컨벤션)
+    # 쿼리 파라미터 전체를 딕셔너리로 가져옵니다.
+    params = dict(request.query_params)
+    
+    return templates.TemplateResponse("board/deatil.html",{"request":request})
+
+    
     
 # 정적 파일 설정
 from fastapi.staticfiles import StaticFiles
