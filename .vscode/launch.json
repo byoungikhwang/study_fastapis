@@ -6,7 +6,7 @@
     "configurations": [
         
         {
-            "name": "Python: Current File",
+            "name": "Python: FastAPI - 10_jina2.py",
             "type": "debugpy",
             "request": "launch",
             "program": "${file}",

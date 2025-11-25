@@ -53,7 +53,7 @@ async def main_html_context(request: Request):
                                       , context)
 
 # http://localhost:8000/
-@app.get("/users_list")
+@app.get("/templates")     # http://123.1.42.1:8000
 async def user_list(request: Request):
     sample_users = [
         {"name": "Alice", "age": 30, "city": "New York"},

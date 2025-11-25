@@ -1,15 +1,65 @@
+// {
+//     // Use IntelliSense to learn about possible attributes.
+//     // Hover to view descriptions of existing attributes.
+//     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//     "version": "0.2.0",
+//     "configurations": [
+    
+//         {
+//             "name": "Python Debugger: Python File",
+//             "type": "debugpy",
+//             "request": "launch",
+//             "program": "${file}"
+//         }
+//     ]
+// }
 {
     // Use IntelliSense to learn about possible attributes.
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+//     "version": "0.2.0",
+//     "configurations": [
+        
+//         {
+//             "name": "Python: Current File",
+//             "type": "debugpy",
+//             "request": "launch",
+//             "program": "${file}",
+//             "console": "integratedTerminal",
+//             "justMyCode": true
+//         },
+//         {
+//             "name": "Python: FastAPI",
+//             "type": "debugpy",
+//             "request": "launch",
+//             "module": "uvicorn",
+//             "args": [
+//                 "10_jina2:app",
+//                 "--reload",
+//                 "--host",
+//                 "0.0.0.0",
+//                 "--port",
+//                 "8000"
+//             ],
+//             "jinja": true,
+//             "justMyCode": true
+//         }
+//     ]
+// }
+{
     "version": "0.2.0",
     "configurations": [
-    
         {
-            "name": "Python Debugger: Python File",
+            "name": "Python: 10_jina2.py FastAPI 실행",
             "type": "debugpy",
             "request": "launch",
-            "program": "${file}"
+            "module": "uvicorn", // 서버 구동을 위한 모듈 지정
+            "args": [
+                "10_jina2:app", // 올바른 파일 및 앱 객체 지정
+                "--reload",
+                // ... 나머지 설정
+            ],
+            "justMyCode": true
         }
     ]
 }
