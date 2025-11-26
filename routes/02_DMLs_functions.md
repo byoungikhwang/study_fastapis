@@ -1,64 +1,86 @@
 ```
-from fastapi import APIRouter, Request
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
-from services.db import get_db_connection
+VS Code Gemini에서 JSON 타입의 응답을 받기 위한 프롬프트는 주로 **구조화된 출력(Structured Output) 기능**을 활용하여 작성됩니다.
 
-router = APIRouter()
+Gemini API는 응답을 특정 JSON 스키마에 맞추도록 강제하는 기능을 제공하며, 이를 VS Code 확장 기능(예: Gemini Code Assist)의 채팅이나 프롬프트 파일에 적용할 수 있습니다.
 
-templates = Jinja2Templates(directory="templates/")
+## 💡 JSON 응답을 위한 프롬프트 구성 요소
 
+JSON 응답을 요청할 때 프롬프트에 포함해야 할 **핵심 지침**은 다음과 같습니다:
 
-@router.post("/")
-async def create_todo(request: Request):
-    params = await request.form()
-    conn = get_db_connection()
-    with conn:
-        conn.execute("INSERT INTO todos (item) VALUES (?)", (params.get("item"),))
-    conn.close()
-    return RedirectResponse(url="/todos/", status_code=303)
+1.  **명확한 JSON 출력 요청:** 응답이 JSON 형식이어야 함을 명확히 명시합니다.
+2.  **JSON 스키마 정의 (가장 중요):** 응답받고자 하는 JSON 데이터의 구조(키, 값의 타입, 배열 여부 등)를 상세히 정의합니다.
+3.  **수행할 작업 명시:** Gemini가 이 JSON 형식으로 무엇을 해야 하는지(예: 코드 설명, 레시피 목록, 함수 분석 등)를 설명합니다.
 
 
-# http://localhost:8000/todos/
-@router.get("/{todo_id}")
-async def get_todo(request: Request, todo_id: str):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, item FROM todos WHERE id = ?", (todo_id,))
-    todo = cursor.fetchone()
-    cursor.execute("SELECT id, item FROM todos ORDER BY id ASC")
-    todos = cursor.fetchall()
-    conn.close()
+## 📝 JSON 프롬프트 템플릿 예시
 
-    context = {
-        "request": request,
-        "todo": todo,
-        "todos": todos
+VS Code의 채팅 창이나 커스텀 프롬프트 파일에서 사용할 수 있는 템플릿입니다. 실제 API를 사용하는 경우, **`responseSchema`** 매개변수를 사용하여 JSON 스키마를 직접 전달하는 것이 가장 확실한 방법이지만, 채팅 인터페이스에서는 프롬프트 내에 지침을 넣어야 합니다.
+
+### 1\. 단순 JSON 객체 요청
+
+주어진 코드에 대한 설명과 개선 사항을 JSON 객체로 요청하는 경우입니다.
+
+markdown
+**지침:**
+제공된 코드 스니펫을 분석하고, 다음 JSON 스키마에 엄격하게 일치하는 형식으로 응답하세요. 다른 설명이나 텍스트는 포함하지 말고, 순수한 JSON 객체만 출력해야 합니다.
+
+**요청 JSON 스키마:**
+json
+{
+  "title": "분석 결과 요약",
+  "description": "코드의 주요 기능에 대한 간결한 설명",
+  "issues_found": [
+    {
+      "severity": "low | medium | high",
+      "issue_type": "성능 | 보안 | 가독성 | 버그",
+      "line_number": "문제 발생 라인 번호 (없으면 -1)",
+      "recommendation": "개선을 위한 구체적인 제안"
     }
-    return templates.TemplateResponse("todos/merged_todo.html", context)
+  ],
+  "overall_rating": "10점 만점 점수 (정수)"
+}
 
 
-# http://localhost:8000/todos/
-@router.get("/")
-def get_todos_html(request: Request):
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT id, item FROM todos ORDER BY id ASC;")
-    todos = cursor.fetchall()
-    conn.close()
+**분석할 코드 스니펫:**
 
-    context = {
-        "request": request,
-        "todos": todos
-    }
-    return templates.TemplateResponse("todos/merged_todo.html", context)
+javascript
+// [여기에 분석할 코드를 붙여넣습니다]
+function calculateArea(r) {
+  return 3.14 * r * r;
+}
 
 
-@router.get("/delete/{todo_id}")
-async def delete_todo(request: Request, todo_id: str):
-    conn = get_db_connection()
-    with conn:
-        conn.execute("DELETE FROM todos WHERE id = ?", (todo_id,))
-    conn.close()
-    return RedirectResponse(url="/todos/", status_code=303)
+
+### 2. JSON 배열 목록 요청
+
+특정 주제에 대한 정보를 목록 형태의 JSON 배열로 요청하는 경우입니다.
+
+markdown
+**지침:**
+요청된 주제에 대한 세 가지 항목을 나열하고, 다음 JSON 배열 스키마에 맞춰 응답하세요. 응답은 JSON 배열로 시작하고 끝나야 하며, JSON 배열 외의 어떠한 텍스트도 포함해서는 안 됩니다.
+
+**요청 JSON 스키마:**
+json
+[
+  {
+    "id": "고유 식별자 (숫자)",
+    "name": "항목의 이름",
+    "category": "항목이 속한 분류",
+    "description_short": "항목에 대한 짧은 설명 (50자 이내)"
+  }
+]
+
+
+**주제:**
+2025년 웹 개발 트렌드 3가지
+
+
+
+## 🔑 성공적인 JSON 출력 프롬프트 팁
+
+* **`JSON` 블록 사용:** 프롬프트에 ` ```json ... ``` `과 같이 **JSON 코드 블록**을 명시적으로 넣어주면, 모델이 해당 형식을 따를 가능성이 높아집니다.
+* **"엄격하게 일치" 강조:** "다른 설명 없이 순수한 JSON만 출력", "다음 스키마에 **엄격하게 일치**해야 함"과 같은 표현을 사용하여 모델이 프롬프트 외의 설명을 추가하지 않도록 명확히 지시합니다.
+* **예시 제공 (Few-shot):** 프롬프트에 유효한 JSON 출력 예시를 하나 또는 두 개 포함하면 모델이 원하는 구조를 더 잘 이해할 수 있습니다.
+
+어떤 코드를 분석하거나 어떤 정보를 추출하고 싶으신가요? 특정 목표에 맞춰 프롬프트를 조정해 드릴 수 있어요!
 ```
