@@ -8,9 +8,11 @@ from routes.notices import router as notices_router # New import
 
 # Import database initializers
 from services.todos_db import init_db as init_todos_db # Renamed for clarity
+from services.notices_db import init_db as init_notices_db # New import
 
-# Initialize the todos database (SQLite)
+# Initialize both databases
 init_todos_db()
+init_notices_db() # New call
 
 app = FastAPI(
     title="Combined App - Todos & Notices",

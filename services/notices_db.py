@@ -14,6 +14,24 @@ def get_db_connection():
     )
     return conn
 
+def init_db():
+    """Initializes the PostgreSQL database and creates the notices table if it doesn't exist."""
+    conn = None
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # Read notices.sql from the querys directory
+            with open("querys/notices.sql", "r") as f:
+                sql_script = f.read()
+            cursor.execute(sql_script)
+            conn.commit()
+    except Exception as e:
+        print(f"Error initializing notices database: {e}")
+        # Depending on desired behavior, could re-raise or log more extensively
+    finally:
+        if conn:
+            conn.close()
+
 def get_db():
     """
     FastAPI dependency that provides a database connection with a DictCursor.
