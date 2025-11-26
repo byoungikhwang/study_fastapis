@@ -2,16 +2,25 @@ from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
+# Import both routers
 from routes.todos import router as todos_router
-from services.db import init_db
+from routes.notices import router as notices_router # New import
 
-# Initialize the database and create the table on startup
-init_db()
+# Import database initializers
+from services.todos_db import init_db as init_todos_db # Renamed for clarity
 
-app = FastAPI()
+# Initialize the todos database (SQLite)
+init_todos_db()
 
-# Include routers
-app.include_router(todos_router, prefix="/todos", tags=["todos"])
+app = FastAPI(
+    title="Combined App - Todos & Notices",
+    description="FastAPI app with Todos (SQLite) and Notices (PostgreSQL).",
+    version="1.0.0"
+)
+
+# Include both routers
+app.include_router(todos_router)
+app.include_router(notices_router) # New include
 
 # Mount static files
 app.mount("/images", StaticFiles(directory="resources/images"), name="images")
@@ -20,4 +29,6 @@ app.mount("/css", StaticFiles(directory="resources/css"), name="css")
 
 @app.get("/")
 def root():
-    return RedirectResponse(url="/todos/")
+    # Redirect to the todos list by default, or maybe a simple index page
+    return RedirectResponse(url="/web/todos/")
+ # Redirect to the HTML list of todos

@@ -24,7 +24,7 @@
     <main class="container">
         <hr>
         <section class="container-fluid">
-            <form method="post" action="/todos/">
+            <form method="post" action="/web/todos/create/">
                 <div class="col-auto">
                     <div class="input-group mb-3">
                         <input aria-describedby="button-addon2" aria-label="Add a todo" class="form-control" name="item"
@@ -44,7 +44,17 @@
             <h4>Todo ID: {{ todo.id }} </h4>
             <p>
                 <strong>
-                    Item: {{ todo.item }}
+                    Item: {{ todo.content }}
+                </strong>
+            </p>
+            <p>
+                <strong>
+                    Status: {{ todo.status }}
+                </strong>
+            </p>
+            <p>
+                <strong>
+                    Deadline: {{ todo.deadline_time | default('N/A') }}
                 </strong>
             </p>
         </article>
@@ -57,8 +67,8 @@
                 <ul class="list-group list-group-flush">
                     {% for current_todo in todos %}
                     <li class="list-group-item">
-                        {{ loop.index }}. <a href="/todos/{{ current_todo.id }}"> {{ current_todo.item }} </a> 
-                        | <a href="/todos/delete/{{ current_todo.id }}"> delete </a>
+                        {{ loop.index }}. <a href="/web/todos/{{ current_todo.id }}"> {{ current_todo.content }} </a> 
+                        | <a href="/web/todos/delete/{{ current_todo.id }}"> delete </a>
                     </li>
                     {% endfor %}
                 </ul>

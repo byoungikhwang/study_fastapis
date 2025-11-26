@@ -2,10 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from psycopg2.extras import DictCursor
-from typing import List
 
-from ..models.notices import Notice, NoticeCreate, NoticeUpdate
-from ..services.db import get_cursor
+from models.notices import Notice, NoticeCreate, NoticeUpdate
+from services.notices_db import get_cursor
 
 router = APIRouter(
     prefix="/notices",
@@ -13,7 +12,7 @@ router = APIRouter(
 )
 
 # Setup templates
-templates = Jinja2Templates(directory="toyproject_fastapis/templates")
+templates = Jinja2Templates(directory="templates")
 
 @router.post("/", response_model=Notice, status_code=201)
 def create_notice(notice: NoticeCreate, cursor: DictCursor = Depends(get_cursor)):
@@ -75,4 +74,3 @@ def delete_notice(notice_id: int, cursor: DictCursor = Depends(get_cursor)):
         raise HTTPException(status_code=404, detail="Notice not found")
     cursor.connection.commit()
     return
-

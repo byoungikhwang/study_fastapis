@@ -1,7 +1,7 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 from fastapi import Depends
-from .config import settings
+from config import settings
 
 def get_db_connection():
     """Creates a new database connection."""
