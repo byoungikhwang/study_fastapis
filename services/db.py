@@ -1,22 +1,23 @@
-import psycopg2     # 연결
-from typing import Optional
+import sqlite3
+
+DATABASE_FILE = "todos.db"
+
+def init_db():
+    """Initializes the database and creates the todos table if it doesn't exist."""
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS todos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            item VARCHAR(255) NOT NULL
+        )
+    """)
+    conn.commit()
+    conn.close()
+
 def get_db_connection():
-    # os.getenv 사용 안 함 → 기본값을 직접 설정
-    DB_HOST: Optional[str] = "db_postgresql"
-    DB_PORT: Optional[str] = "5432"
-    POSTGRES_DB: Optional[str] = "main_db"
-    POSTGRES_USER: Optional[str] = "admin"
-    POSTGRES_PASSWORD: Optional[str] = "admin123"
-    conn = psycopg2.connect(
-        host=DB_HOST,
-        port=DB_PORT,
-        dbname=POSTGRES_DB,
-        user=POSTGRES_USER,
-        password=POSTGRES_PASSWORD
-    )
+    """Returns a new database connection."""
+    conn = sqlite3.connect(DATABASE_FILE)
+    # Return rows that can be accessed by column name
+    conn.row_factory = sqlite3.Row
     return conn
-
-
-
-
-

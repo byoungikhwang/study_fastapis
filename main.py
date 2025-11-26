@@ -3,6 +3,10 @@ from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from routes.todos import router as todos_router
+from services.db import init_db
+
+# Initialize the database and create the table on startup
+init_db()
 
 app = FastAPI()
 
