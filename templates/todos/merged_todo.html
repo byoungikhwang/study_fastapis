@@ -41,10 +41,10 @@
         {% if todo %}
         <article class="card container-fluid">
             <br/>
-            <h4>Todo ID: {{ todo[0] }} </h4>
+            <h4>Todo ID: {{ todo.id }} </h4>
             <p>
                 <strong>
-                    Item: {{ todo[1] }}
+                    Item: {{ todo.item }}
                 </strong>
             </p>
         </article>
@@ -55,10 +55,10 @@
             <br>
             <div class="card">
                 <ul class="list-group list-group-flush">
-                    {% for todo in todos %}
+                    {% for current_todo in todos %}
                     <li class="list-group-item">
-                        {{ loop.index }}. <a href="/todos/{{ todo[0] }}"> {{ todo[1] }} </a> 
-                        | <a href="/todos/delete/{{ todo[0] }}"> delete_button </a>
+                        {{ loop.index }}. <a href="/todos/{{ current_todo.id }}"> {{ current_todo.item }} </a> 
+                        | <a href="/todos/delete/{{ current_todo.id }}"> delete </a>
                     </li>
                     {% endfor %}
                 </ul>
