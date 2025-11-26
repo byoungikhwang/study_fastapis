@@ -1,44 +1,19 @@
 from fastapi import FastAPI
-from fastapi.templating import Jinja2Templates
-from fastapi import Request
+from fastapi.responses import RedirectResponse
+from .routes import notices
 
-app = FastAPI()
-templates = Jinja2Templates(directory="templates/")
+app = FastAPI(
+    title="Toy Project - Notices CRUD",
+    description="A simple FastAPI project to demonstrate CRUD operations for notices.",
+    version="1.0.0"
+)
 
-# http://localhost:8000/
-@app.get("/")
-async def root():
-    return {"message": "Hello, World!"}
+# Include the router for the notices API
+app.include_router(notices.router)
 
-# http://localhost:8000/html
-@app.get("/html")
-async def root_html():
-    html_content = '''
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Otter</title>
-        </head>
-        <body>
-            <div>My name is Otter!</div>
-        </body>
-        </html>
-        '''
-    return html_content
-
-# http://localhost:8000/main_html
-@app.get("/main_html")
-async def main_html(request: Request):
-    return templates.TemplateResponse("main.html", {"request": request})
-
-# http://localhost:8000/concept_01_html
-@app.get("/concept_01_html")
-async def concept_01_html(request: Request):
-    return templates.TemplateResponse("concept_01.html", {"request": request})
-
-# http://localhost:8000/concept_02_html
-@app.get("/concept_02_html")
-async def concept_02_html(request: Request):
-    return templates.TemplateResponse("concept_02.html", {"request": request})
+@app.get("/", include_in_schema=False)
+def root():
+    """
+    Redirects the root URL to the notices HTML list page.
+    """
+    return RedirectResponse(url="/notices/")
