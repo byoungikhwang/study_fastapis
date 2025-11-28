@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
+from typing import Any
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from psycopg2.extras import DictCursor
@@ -15,7 +16,7 @@ router = APIRouter(
 templates = Jinja2Templates(directory="templates")
 
 @router.post("/", response_model=Notice, status_code=201)
-def create_notice(notice: NoticeCreate, cursor: DictCursor = Depends(get_cursor)):
+def create_notice(notice: NoticeCreate, cursor: Any = Depends(get_cursor)):
     """
     Create a new notice.
     """
@@ -28,7 +29,7 @@ def create_notice(notice: NoticeCreate, cursor: DictCursor = Depends(get_cursor)
     return new_notice_record
 
 @router.get("/", response_class=HTMLResponse)
-def read_notices_html(request: Request, cursor: DictCursor = Depends(get_cursor)):
+def read_notices_html(request: Request, cursor: Any = Depends(get_cursor)):
     """
     Retrieve all notices and display them in an HTML page.
     """
@@ -38,7 +39,7 @@ def read_notices_html(request: Request, cursor: DictCursor = Depends(get_cursor)
     return templates.TemplateResponse("notices.html", {"request": request, "notices": notices})
 
 @router.get("/{notice_id}", response_model=Notice)
-def read_notice(notice_id: int, cursor: DictCursor = Depends(get_cursor)):
+def read_notice(notice_id: int, cursor: Any = Depends(get_cursor)):
     """
     Read a single notice by its ID.
     """
@@ -50,7 +51,7 @@ def read_notice(notice_id: int, cursor: DictCursor = Depends(get_cursor)):
     return notice
 
 @router.put("/{notice_id}", response_model=Notice)
-def update_notice(notice_id: int, notice: NoticeUpdate, cursor: DictCursor = Depends(get_cursor)):
+def update_notice(notice_id: int, notice: NoticeUpdate, cursor: Any = Depends(get_cursor)):
     """
     Update a notice by its ID.
     """
@@ -63,7 +64,7 @@ def update_notice(notice_id: int, notice: NoticeUpdate, cursor: DictCursor = Dep
     return updated_notice
 
 @router.delete("/{notice_id}", status_code=204)
-def delete_notice(notice_id: int, cursor: DictCursor = Depends(get_cursor)):
+def delete_notice(notice_id: int, cursor: Any = Depends(get_cursor)):
     """
     Delete a notice by its ID.
     """

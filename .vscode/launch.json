@@ -5,6 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         
+        
         {
             "name": "Python: FastAPI - 10_jina2.py",
             "type": "debugpy",

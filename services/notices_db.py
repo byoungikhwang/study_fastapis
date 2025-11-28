@@ -1,6 +1,7 @@
 import psycopg2
 from psycopg2.extras import DictCursor
 from fastapi import Depends
+from typing import Any
 from config import settings
 
 def get_db_connection():
@@ -46,7 +47,7 @@ def get_db():
             conn.close()
 
 # A dependency for a cursor, which is what we actually use to execute queries.
-def get_cursor(conn: Depends(get_db)):
+def get_cursor(conn: Any = Depends(get_db)):
     """
     FastAPI dependency that provides a DictCursor from a connection.
     """
